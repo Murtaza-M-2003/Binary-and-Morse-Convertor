@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Binary and Morse Converter</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <style>
+      textarea:focus {
+        box-shadow: none !important;
+        border: 2px solid #c10 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <div class="container py-5 mt-5">
+        <div class="row text-center justify-content-center">
+          <h1>Binary and Morse Converter</h1>
+
+          <h2 class="mt-5 mb-3">Binary to Text Converter</h2>
+          <form action="">
+            <div class="form-floating">
+              <textarea
+                id="binaryInput"
+                class="form-control rounded-3 overflow-hidden"
+                placeholder="Leave a comment here"
+              ></textarea>
+              <label for="binaryInput"
+                >Enter binary code to convert to text</label
+              >
+            </div>
+          </form>
+          <button
+            class="border-0 bg-danger text-white rounded-3 px-5 py-3 mt-4 mb-3"
+            style="width: fit-content"
+            onclick="convertBinaryToAscii()"
+          >
+            Convert to Text
+          </button>
+          <p class="h4" id="binaryToAsciiResult"></p>
+
+          <h2 class="mt-5 mb-3">Text to Binary Converter</h2>
+          <form action="">
+            <div class="form-floating">
+              <textarea
+                id="asciiInput"
+                class="form-control rounded-3 overflow-hidden"
+                placeholder="Leave a comment here"
+              ></textarea>
+              <label for="asciiInput"
+                >Enter text to convert to binary code</label
+              >
+            </div>
+          </form>
+          <button
+            class="border-0 bg-danger text-white rounded-3 px-5 py-3 mt-4 mb-3"
+            style="width: fit-content"
+            onclick="convertAsciiToBinary()"
+          >
+            Convert to Binary
+          </button>
+          <p class="h4" id="asciiToBinaryResult"></p>
+
+          <!-- morse code -->
+          <h2 class="mt-5 mb-3">Text to Morse Code Converter</h2>
+          <form action="">
+            <div class="form-floating">
+              <textarea
+                id="morseInput"
+                class="form-control rounded-3 overflow-hidden"
+                placeholder="Leave a comment here"
+              ></textarea>
+              <label for="morseInput"
+                >Enter text to convert to Morse code</label
+              >
+            </div>
+          </form>
+          <button
+            class="border-0 bg-danger text-white rounded-3 px-5 py-3 mt-4 mb-3"
+            style="width: fit-content"
+            onclick="convertTextToMorse()"
+          >
+            Convert to Morse Code
+          </button>
+          <p class="h4" id="textToMorseResult"></p>
+
+          <h2 class="mt-5 mb-3">Morse Code to Text Converter</h2>
+          <form action="">
+            <div class="form-floating">
+              <textarea
+                id="morseInput2"
+                class="form-control rounded-3 overflow-hidden"
+                placeholder="Leave a comment here"
+              ></textarea>
+              <label for="morseInput2">Enter text or Morse code</label>
+            </div>
+          </form>
+          <button
+            class="border-0 bg-danger text-white rounded-3 px-5 py-3 mt-4 mb-3"
+            style="width: fit-content"
+            onclick="convertMorseToText()"
+          >
+            Convert to Text
+          </button>
+          <p class="h4" id="textToMorseResult2"></p>
+
+          <!-- morse code -->
+        </div>
+      </div>
+    </section>
+    <script>
+      function convertBinaryToAscii() {
+        // Get the binary input from the user
+        let binaryString = document
+          .getElementById("binaryInput")
+          .value.replace(/\s+/g, "");
+
+        // Check if the length of the binary string is a multiple of 8
+        if (binaryString.length % 8 !== 0) {
+          document.getElementById("binaryToAsciiResult").innerText =
+            "Invalid binary string length.";
+          return;
+        }
+
+        try {
+          let asciiString = "";
+          // Split the binary string into chunks of 8 bits
+          for (let i = 0; i < binaryString.length; i += 8) {
+            let byte = binaryString.slice(i, i + 8);
+            let charCode = parseInt(byte, 2);
+            if (isNaN(charCode)) {
+              throw new Error("Invalid binary string content.");
+            }
+            asciiString += String.fromCharCode(charCode);
+          }
+          // Display the converted ASCII string
+          document.getElementById("binaryToAsciiResult").innerText =
+            "Converted to text: " + asciiString;
+        } catch (e) {
+          document.getElementById("binaryToAsciiResult").innerText = e.message;
+        }
+      }
+
+      function convertAsciiToBinary() {
+        // Get the ASCII input from the user
+        let asciiString = document.getElementById("asciiInput").value;
+
+        try {
+          let binaryString = "";
+          // Convert each character to binary and pad with 0s to ensure 8 bits
+          for (let i = 0; i < asciiString.length; i++) {
+            let binaryChar = asciiString.charCodeAt(i).toString(2);
+            binaryString += binaryChar.padStart(8, "0") + " ";
+          }
+          // Display the converted binary string
+          document.getElementById("asciiToBinaryResult").innerText =
+            "Converted to Binary: " + binaryString.trim();
+        } catch (e) {
+          document.getElementById("asciiToBinaryResult").innerText = e.message;
+        }
+      }
+
+      const MORSE_CODE = {
+        a: ".-",
+        b: "-...",
+        c: "-.-.",
+        d: "-..",
+        e: ".",
+        f: "..-.",
+        g: "--.",
+        h: "....",
+        i: "..",
+        j: ".---",
+        k: "-.-",
+        l: ".-..",
+        m: "--",
+        n: "-.",
+        o: "---",
+        p: ".--.",
+        q: "--.-",
+        r: ".-.",
+        s: "...",
+        t: "-",
+        u: "..-",
+        v: "...-",
+        w: ".--",
+        x: "-..-",
+        y: "-.--",
+        z: "--..",
+        1: ".----",
+        2: "..---",
+        3: "...--",
+        4: "....-",
+        5: ".....",
+        6: "-....",
+        7: "--...",
+        8: "---..",
+        9: "----.",
+        0: "-----",
+        ".": ".-.-.-",
+        ",": "--..--",
+        "?": "..--..",
+        "'": ".----.",
+        "!": "-.-.--",
+        "/": "-..-.",
+        "(": "-.--.",
+        ")": "-.--.-",
+        "&": ".-...",
+        ":": "---...",
+        ";": "-.-.-.",
+        "=": "-...-",
+        "+": ".-.-.",
+        "-": "-....-",
+        _: "..--.-",
+        '"': ".-..-.",
+        $: "...-..-",
+        "@": ".--.-.",
+      };
+
+      function convertTextToMorse() {
+        // Get the text input from the user
+        let text = document.getElementById("morseInput").value.toLowerCase();
+
+        try {
+          let morseString = "";
+          // Convert each character to Morse code
+          for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (char === " ") {
+              morseString += " / "; // Add a slash between words
+            } else if (MORSE_CODE[char]) {
+              morseString += MORSE_CODE[char] + " "; // Add Morse code for the character followed by a space
+            } else {
+              throw new Error("Invalid character: " + char);
+            }
+          }
+          // Display the converted Morse code
+          document.getElementById("textToMorseResult").innerText =
+            "Converted to Morse code: " + morseString.trim();
+        } catch (e) {
+          document.getElementById("textToMorseResult").innerText = e.message;
+        }
+      }
+
+      function convertMorseToText() {
+        // Get the Morse code input from the user
+        let morseCode = document.getElementById("morseInput2").value.trim();
+
+        try {
+          let text = "";
+          // Split Morse code into individual words
+          let morseWords = morseCode.split(" / "); // Use slash as word separator
+          for (let i = 0; i < morseWords.length; i++) {
+            let morseLetters = morseWords[i].split(" ");
+            for (let j = 0; j < morseLetters.length; j++) {
+              if (morseLetters[j] === "") {
+                text += " "; // Add a space for an empty Morse code character
+              } else if (MORSE_CODE_REVERSE[morseLetters[j]]) {
+                text += MORSE_CODE_REVERSE[morseLetters[j]];
+              } else {
+                throw new Error("Invalid Morse code: " + morseLetters[j]);
+              }
+            }
+            // Add space between words
+            if (i < morseWords.length - 1) {
+              text += " ";
+            }
+          }
+          // Display the converted text
+          document.getElementById("textToMorseResult2").innerText =
+            "Converted to text: " + text;
+        } catch (e) {
+          document.getElementById("textToMorseResult2").innerText = e.message;
+        }
+      }
+
+      const MORSE_CODE_REVERSE = {};
+      for (let char in MORSE_CODE) {
+        MORSE_CODE_REVERSE[MORSE_CODE[char]] = char;
+      }
+    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
